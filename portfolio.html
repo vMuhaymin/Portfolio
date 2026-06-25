@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    
+    <style>
+        /* Base Reset & Variables */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            color: #ffffff;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #030303; 
+            overflow-x: hidden;
+        }
+
+        /* Typography Helpers */
+        .mono {
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+        }
+        
+        .dim {
+            color: #aaaaaa;
+        }
+
+        /* =========================================================
+           SCROLL REVEAL ANIMATIONS
+           ========================================================= */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+
+        .reveal-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered Delays */
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+
+        .proj-delay-1 { transition-delay: 0.1s; }
+        .proj-delay-2 { transition-delay: 0.15s; }
+        .proj-delay-3 { transition-delay: 0.2s; }
+        .proj-delay-4 { transition-delay: 0.25s; }
+        .proj-delay-5 { transition-delay: 0.3s; }
+
+        /* =========================================================
+           FULLSCREEN FIXED VIDEO BACKGROUND
+           ========================================================= */
+        .video-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            object-position: 70% center;
+            z-index: -2; 
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 100%);
+            backdrop-filter: blur(4px); 
+            z-index: -1;
+        }
+
+        /* =========================================================
+           HERO SECTION (100vh)
+           ========================================================= */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        nav {
+            display: flex;
+            justify-content: flex-end;
+            gap: 2.5rem;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            margin-bottom: 3rem;
+        }
+
+        nav a { color: #ffffff; text-decoration: none; transition: opacity 0.2s; }
+        nav a:hover { opacity: 0.7; }
+        nav .talk-btn { margin-left: 2rem; }
+
+        .top-info {
+            display: grid;
+            grid-template-columns: 1.5fr 1.5fr 1fr 1.2fr;
+            gap: 2rem;
+            width: 100%;
+        }
+
+        .col-name h1 { font-size: 1.1rem; font-weight: normal; letter-spacing: 1px; margin-bottom: 1.5rem; white-space: nowrap; }
+        .subtext-container { display: flex; gap: 8px; }
+        .arrow { color: #aaaaaa; font-size: 0.9rem; line-height: 1; margin-top: -2px; }
+        .subtext { font-size: 0.65rem; line-height: 1.4; text-transform: none; }
+        .col-role h2 { font-size: 1.3rem; font-weight: normal; line-height: 1.2; }
+        .col-what h3, .col-services h3 { font-size: 0.75rem; margin-bottom: 1rem; letter-spacing: 1px; }
+        .col-what p, .col-services ul { font-size: 0.85rem; line-height: 1.5; list-style: none; }
+        .col-services ul li { margin-bottom: 0.3rem; }
+
+        .center-media {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center; 
+            align-items: center;     
+            margin: 2rem 0; 
+            width: 100%;
+        }
+
+        .media-square {
+            width: 320px; 
+            height: 320px;
+            background-color: #1a1a1a;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .media-square img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        .main-headline { margin-top: auto; padding-bottom: 1rem; }
+        .main-headline h2 { font-size: 4.5rem; line-height: 1.1; font-weight: normal; letter-spacing: -1px; text-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .main-headline .mono { font-size: 4rem; letter-spacing: 2px; }
+
+
+        /* =========================================================
+           SKILLS MARQUEE SECTION
+           ========================================================= */
+        .skills-section {
+            padding: 8rem 0; /* No horizontal padding so marquee touches edges */
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem; /* Space between marquees and center text */
+            overflow: hidden;
+        }
+
+        /* The wrapper handles the fade in/out edges using a mask */
+        .marquee-wrapper {
+            width: 100%;
+            overflow: hidden;
+            /* Creates the transparent fading edges */
+            -webkit-mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent);
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+        }
+
+        /* Top Row moves Left */
+        .track-left {
+            animation: moveLeft 35s linear infinite;
+        }
+
+        /* Bottom Row moves Right */
+        .track-right {
+            animation: moveRight 35s linear infinite;
+        }
+
+        .marquee-content {
+            display: flex;
+            flex-shrink: 0;
+            align-items: center;
+            gap: 4rem; /* Space between words */
+            padding-right: 4rem; /* Matches gap to make loop seamless */
+        }
+
+        .marquee-content span {
+            font-size: 1.25rem;
+            color: #d1d1d1;
+            white-space: nowrap;
+        }
+
+        /* Center Text Container */
+        .skills-center-text {
+            text-align: center;
+            padding: 0 2rem;
+        }
+
+        .skills-center-text h2 {
+            font-family: inherit;
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: #fdf3e1; /* Beige/Cream color from image */
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .skills-center-text p {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: #d1d1d1;
+        }
+
+        @keyframes moveLeft {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); } /* Moves exactly half the duplicated content width */
+        }
+
+        @keyframes moveRight {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+
+        /* =========================================================
+           SELECTED PROJECTS SECTION
+           ========================================================= */
+        .projects-section {
+            padding: 8rem 2.5rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .section-header { display: flex; align-items: center; gap: 0.75rem; font-size: 1rem; letter-spacing: 1px; margin-bottom: 4rem; text-transform: uppercase; }
+        .projects-wrapper { display: flex; justify-content: space-between; align-items: flex-start; position: relative; }
+        .projects-list { width: 100%; max-width: 60%; display: flex; flex-direction: column; }
+        
+        .project-row {
+            display: flex;
+            padding: 2rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            transition: opacity 0.4s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .project-row:first-child { border-top: 1px solid rgba(255,255,255,0.1); }
+        .projects-list:has(.project-row:hover) .project-row:not(:hover) { opacity: 0.2; }
+
+        .proj-num { font-family: 'Courier New', Courier, monospace; font-size: 1rem; margin-right: 2rem; margin-top: 0.75rem; color: #888; }
+        .proj-info { flex-grow: 1; }
+        .proj-title { font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; font-size: 5rem; text-transform: uppercase; line-height: 1; margin-bottom: 0.75rem; color: #d1d1d1; transition: color 0.3s ease; display: flex; align-items: center; gap: 1.5rem; }
+        .proj-arrow { opacity: 0; transform: translateX(-15px) rotate(45deg); transition: all 0.3s ease; width: 35px; height: 35px; }
+        
+        .project-row:hover .proj-title { color: #d71e1e; }
+        .project-row:hover .proj-arrow { opacity: 1; transform: translateX(0) rotate(45deg); color: #d71e1e; }
+
+        .proj-tech { font-size: 0.85rem; color: #888; letter-spacing: 1px; display: flex; gap: 0.5rem; align-items: center; }
+
+        .project-preview { position: sticky; top: 25vh; width: 35%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background-color: transparent; pointer-events: none; }
+        .preview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease, transform 0.5s ease; }
+
+        .projects-wrapper:has(.row-1:hover) .img-1,
+        .projects-wrapper:has(.row-2:hover) .img-2,
+        .projects-wrapper:has(.row-3:hover) .img-3,
+        .projects-wrapper:has(.row-4:hover) .img-4,
+        .projects-wrapper:has(.row-5:hover) .img-5 { opacity: 1; transform: scale(1); }
+
+        /* =========================================================
+           CONTACT SECTION
+           ========================================================= */
+        .contact-section {
+            padding: 8rem 2.5rem;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+        }
+
+        .contact-container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .contact-headline {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 7rem;
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 3rem;
+        }
+
+        .contact-headline .text-white { color: #ffffff; }
+        .contact-headline .text-grey { color: #333333; }
+
+        .contact-form { display: flex; flex-direction: column; gap: 1.5rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+        .form-group label { font-size: 0.9rem; color: #888888; }
+
+        .form-group input, .form-group select, .form-group textarea {
+            background-color: #333333; border: 1px solid #333333; border-radius: 8px;
+            padding: 1rem 1.25rem; color: #ffffff; font-family: inherit; font-size: 1rem;
+            outline: none; transition: border-color 0.3s ease, background-color 0.3s ease; width: 100%;
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder { color: #888888; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #f46b3e; background-color: #3a3a3a; }
+
+        .form-group select {
+            appearance: none; cursor: pointer; color: #888888;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23888888%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat; background-position: right 1.25rem top 50%; background-size: 0.65rem auto;
+        }
+        .form-group select option { color: #ffffff; background-color: #333333; }
+
+        .submit-btn {
+            background-color: #f46b3e; color: #ffffff; border: none; border-radius: 8px;
+            padding: 1.2rem; font-size: 1rem; font-weight: bold; cursor: pointer;
+            transition: transform 0.2s ease, filter 0.2s ease; margin-top: 1rem; font-family: inherit;
+        }
+        .submit-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* =========================================================
+           FOOTER
+           ========================================================= */
+        footer {
+            display: flex; justify-content: space-between; font-size: 0.75rem; padding: 2.5rem;
+            font-weight: bold; position: relative; z-index: 10; border-top: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        }
+
+        footer a { color: #cc0000; text-decoration: none; }
+        .footer-stats { color: #ccc; }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 1200px) {
+            .main-headline h2 { font-size: 3.5rem; }
+            .main-headline .mono { font-size: 3rem; }
+            .proj-title { font-size: 4rem; }
+            .contact-headline { font-size: 5.5rem; }
+            .skills-center-text h2 { font-size: 2rem; }
+        }
+
+        @media (max-width: 1024px) {
+            .top-info { grid-template-columns: 1fr 1fr; row-gap: 3rem; }
+            .main-headline h2 { font-size: 2.8rem; }
+            .main-headline .mono { font-size: 2.3rem; }
+            .media-square { width: 280px; height: 280px; }
+            
+            .projects-list { max-width: 55%; }
+            .proj-title { font-size: 3rem; }
+            .project-preview { width: 40%; }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section { padding: 1.5rem; min-height: auto; padding-bottom: 4rem;}
+            nav { justify-content: flex-start; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; }
+            nav .talk-btn { margin-left: 0; width: 100%; }
+            .top-info { grid-template-columns: 1fr; row-gap: 2rem; }
+            .media-square { width: 100%; max-width: 350px; height: auto; aspect-ratio: 1/1; }
+            .main-headline { margin-top: 3rem; }
+            .main-headline h2 { font-size: 2.5rem; }
+            .main-headline .mono { font-size: 2rem; }
+
+            .skills-section { gap: 3rem; padding: 5rem 0; }
+            .skills-center-text h2 { font-size: 1.5rem; }
+
+            .projects-section { padding: 4rem 1.5rem; }
+            .projects-list { max-width: 100%; }
+            .proj-title { font-size: 2.5rem; }
+            .proj-num { margin-right: 1rem; }
+            .project-preview { display: none; }
+
+            .contact-section { padding: 4rem 1.5rem; }
+            .contact-headline { font-size: 4rem; }
+            .form-row { grid-template-columns: 1fr; }
+
+            footer { flex-direction: column; gap: 1rem; text-align: left; padding: 1.5rem; border-top: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- FULLSCREEN VIDEO BACKGROUND -->
+    <video autoplay muted loop playsinline class="video-bg">
+        <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260622_204221_5339e40b-e73d-4ab0-9c65-79c18c66fd50.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- MAIN SCROLLING CONTENT -->
+    <main>
+        
+        <!-- HERO SECTION -->
+        <section class="hero-section">
+            <nav class="mono reveal-up">
+                <a href="#">ABOUT</a>
+                <a href="#">PROCESS</a>
+                <a href="#">PROJECTS</a>
+                <a href="#">CATALOG</a>
+                <a href="#">D.O.T</a>
+                <a href="#" class="talk-btn">TALK</a>
+            </nav>
+
+            <div class="top-info">
+                <div class="col-name reveal-up delay-1">
+                    <h1>ABDUL <span class="mono">MUHAYMIN</span></h1>
+                    <div class="subtext-container">
+                        <span class="arrow">&#x21B1;</span>
+                        <p class="subtext dim mono">Grilled Pixels is my<br>personal brand - I came up<br>with it in 2004 based on<br>"cooking up ideas"</p>
+                    </div>
+                </div>
+
+                <div class="col-role reveal-up delay-2">
+                    <h2>DESIGN &<br><span class="mono">ENGINEERING</span></h2>
+                </div>
+
+                <div class="col-what reveal-up delay-3">
+                    <h3 class="dim mono">WHAT I DO</h3>
+                    <p>I create the top 1% of<br>experiences for brands and<br>digital products</p>
+                </div>
+
+                <div class="col-services reveal-up delay-4">
+                    <h3 class="dim mono">SERVICES</h3>
+                    <ul>
+                        <li>Branding</li>
+                        <li>Creative Direction & Strategy</li>
+                        <li>UX/UI Design</li>
+                        <li>Web Development (React/Nextjs)</li>
+                        <li>3D, WebGL / Photography</li>
+                        <li>Video & Animation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="center-media reveal-up delay-2">
+                <!-- <div class="media-square">
+                    <img src="https://via.placeholder.com/400x400/1a1a1a/333333?text=Add+Your+Picture+Here" alt="Pixel Face Picture">
+                </div> -->
+            </div>
+
+            <div class="main-headline reveal-up delay-3">
+                <h2>I BRING THE<br><span class="mono">UNEXPECTED</span> TO<br>BRAND & DIGITAL<br><span class="mono">EXPERIENCES</span></h2>
+            </div>
+        </section>
+
+
+        <!-- SKILLS / TECH MARQUEE SECTION -->
+        <section class="skills-section">
+            
+            <!-- TOP ROW: Moves Left -->
+            <div class="marquee-wrapper reveal-up">
+                <div class="marquee-track track-left">
+                    <!-- Original Group -->
+                    <div class="marquee-content">
+                        <span>HTML</span><span>GitHub</span><span>Lighthouse</span><span>GitLab</span><span>Stripe</span><span>Blender</span><span>Polypane</span><span>Vite</span><span>cPanel</span><span>Windows</span><span>React</span><span>Figma</span>
+                    </div>
+                    <!-- Duplicated Group for Infinite Loop -->
+                    <div class="marquee-content">
+                        <span>HTML</span><span>GitHub</span><span>Lighthouse</span><span>GitLab</span><span>Stripe</span><span>Blender</span><span>Polypane</span><span>Vite</span><span>cPanel</span><span>Windows</span><span>React</span><span>Figma</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CENTER TEXT -->
+            <div class="skills-center-text reveal-up delay-1">
+                <h2>EXPERIENCED WITH ALL THESE<br>TOOLS AND TECHNOLOGIES</h2>
+                <p>(and many more)</p>
+            </div>
+
+            <!-- BOTTOM ROW: Moves Right -->
+            <div class="marquee-wrapper reveal-up delay-2">
+                <div class="marquee-track track-right">
+                    <!-- Original Group -->
+                    <div class="marquee-content">
+                        <span>CSS</span><span>Word</span><span>Astro</span><span>Postman</span><span>Ghost</span><span>SQL</span><span>DataGrip</span><span>Linux</span><span>PowerPoint</span><span>Bootstrap</span><span>Node.js</span><span>Next.js</span>
+                    </div>
+                    <!-- Duplicated Group for Infinite Loop -->
+                    <div class="marquee-content">
+                        <span>CSS</span><span>Word</span><span>Astro</span><span>Postman</span><span>Ghost</span><span>SQL</span><span>DataGrip</span><span>Linux</span><span>PowerPoint</span><span>Bootstrap</span><span>Node.js</span><span>Next.js</span>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- SELECTED PROJECTS SECTION -->
+        <section class="projects-section">
+            <div class="section-header mono reveal-up">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="2" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
+                </svg>
+                SELECTED PROJECTS
+            </div>
+
+            <div class="projects-wrapper">
+                <div class="projects-list">
+                    <div class="project-row row-1 reveal-up proj-delay-1">
+                        <div class="proj-num">_01.</div>
+                        <div class="proj-info">
+                            <h2 class="proj-title">Electro EV <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">Next.js &bull; Payload CMS &bull; Tailwind CSS</div>
+                        </div>
+                    </div>
+
+                    <div class="project-row row-2 reveal-up proj-delay-2">
+                        <div class="proj-num">_02.</div>
+                        <div class="proj-info">
+                            <h2 class="proj-title">Epikcart <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">React &bull; Redux &bull; React i18n</div>
+                        </div>
+                    </div>
+
+                    <div class="project-row row-3 reveal-up proj-delay-3">
+                        <div class="proj-num">_03.</div>
+                        <div class="proj-info">
+                            <h2 class="proj-title">Resume Roaster <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">GPT-4 &bull; Next.js &bull; Postgresql</div>
+                        </div>
+                    </div>
+
+                    <div class="project-row row-4 reveal-up proj-delay-4">
+                        <div class="proj-num">_04.</div>
+                        <div class="proj-info">
+                            <h2 class="proj-title">Real Estate <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">React.js &bull; Redux &bull; Tailwind CSS</div>
+                        </div>
+                    </div>
+
+                    <div class="project-row row-5 reveal-up proj-delay-5">
+                        <div class="proj-num">_05.</div>
+                        <div class="proj-info">
+                            <h2 class="proj-title">Consulting Finance <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">HTML &bull; CSS & SCSS &bull; Javascript</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-preview reveal-up delay-2">
+                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Electro+EV+Preview" class="preview-img img-1" alt="Electro EV">
+                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Epikcart+Store" class="preview-img img-2" alt="Epikcart">
+                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Resume+Roaster" class="preview-img img-3" alt="Resume Roaster">
+                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Real+Estate+App" class="preview-img img-4" alt="Real Estate">
+                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Consulting+Finance" class="preview-img img-5" alt="Consulting Finance">
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT ME SECTION -->
+        <section class="contact-section">
+            <div class="contact-container reveal-up">
+                <h2 class="contact-headline">
+                    <span class="text-white">LET'S WORK</span><br>
+                    <span class="text-grey">TOGETHER</span>
+                </h2>
+                <form class="contact-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" placeholder="Your Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Your@email.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="budget">Budget</label>
+                        <select id="budget">
+                            <option value="" disabled selected>Select...</option>
+                            <option value="1k-5k">$1,000 - $5,000</option>
+                            <option value="5k-10k">$5,000 - $10,000</option>
+                            <option value="10k+">$10,000+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" rows="5" placeholder="Message"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Submit</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="reveal-up">
+            <div class="availability">Open to freelance, contract or full-time. <a href="#">Schedule a call</a></div>
+            <div class="footer-stats">5 full cases &bull; 82 archive fragments &bull; 22 catalog items</div>
+        </footer>
+
+    </main>
+
+    <!-- Scroll Reveal JavaScript Logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    } else {
+                        entry.target.classList.remove('is-visible');
+                    }
+                });
+            }, observerOptions);
+
+            const revealElements = document.querySelectorAll('.reveal-up');
+            revealElements.forEach((el) => {
+                observer.observe(el);
+            });
+        });
+    </script>
+
+</body>
+</html>
