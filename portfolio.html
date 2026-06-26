@@ -439,17 +439,15 @@
             footer { flex-direction: column; gap: 1rem; text-align: left; padding: 1.5rem; border-top: none; }
         }
     </style>
+    <!-- Mux Video Web Component -->
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-video@latest"></script>
 </head>
 <body>
 
     <!-- FULLSCREEN VIDEO BACKGROUND -->
     <div class="video-container">
-        <video id="video-bg-1" class="video-bg active" autoplay muted playsinline>
-            <source src="./media/oceanFlow.mp4" type="video/mp4">
-        </video>
-        <video id="video-bg-2" class="video-bg" muted playsinline>
-            <source src="./media/oceanFlow.mp4" type="video/mp4">
-        </video>
+        <mux-video id="video-bg-1" class="video-bg active" playback-id="QBM3KMVm1lMbEB6cqhIOzIzKyo4yBstLV4GU01hpmKAE" autoplay muted playsinline></mux-video>
+        <mux-video id="video-bg-2" class="video-bg" playback-id="QBM3KMVm1lMbEB6cqhIOzIzKyo4yBstLV4GU01hpmKAE" muted playsinline></mux-video>
     </div>
     <div class="video-overlay"></div>
 
