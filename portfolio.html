@@ -6,6 +6,10 @@
     <title>Portfolio</title>
     
     <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
         /* Base Reset & Variables */
         * {
             box-sizing: border-box;
@@ -285,14 +289,41 @@
 
         .proj-tech { font-size: 0.85rem; color: #888; letter-spacing: 1px; display: flex; gap: 0.5rem; align-items: center; }
 
+        .proj-bullets {
+            margin-top: 1rem;
+            list-style-type: none;
+            padding-left: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .proj-bullets li {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #888888;
+            position: relative;
+            padding-left: 1.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .proj-bullets li::before {
+            content: "—";
+            position: absolute;
+            left: 0;
+            color: #d71e1e;
+        }
+
+        .project-row:hover .proj-bullets li {
+            color: #ffffff;
+        }
+
         .project-preview { position: sticky; top: 25vh; width: 35%; aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; background-color: transparent; pointer-events: none; }
         .preview-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(0.95); transition: opacity 0.5s ease, transform 0.5s ease; }
 
         .projects-wrapper:has(.row-1:hover) .img-1,
         .projects-wrapper:has(.row-2:hover) .img-2,
-        .projects-wrapper:has(.row-3:hover) .img-3,
-        .projects-wrapper:has(.row-4:hover) .img-4,
-        .projects-wrapper:has(.row-5:hover) .img-5 { opacity: 1; transform: scale(1); }
+        .projects-wrapper:has(.row-3:hover) .img-3 { opacity: 1; transform: scale(1); }
 
         /* =========================================================
            CONTACT SECTION
@@ -428,10 +459,9 @@
         <!-- HERO SECTION -->
         <section class="hero-section">
             <nav class="mono reveal-up">
-                <a href="#">ABOUT</a>
-                <a href="#">PROCESS</a>
-                <a href="#">PROJECTS</a>
-                <a href="#" class="talk-btn">TALK</a>
+                <a href="#process">PROCESS</a>
+                <a href="#projects">PROJECTS</a>
+                <a href="#contact" class="talk-btn">TALK</a>
             </nav>
 
             <div class="top-info">
@@ -478,7 +508,7 @@
 
 
         <!-- SKILLS / TECH MARQUEE SECTION -->
-        <section class="skills-section">
+        <section class="skills-section" id="process">
             
             <!-- TOP ROW: Moves Left -->
             <div class="marquee-wrapper reveal-up">
@@ -518,7 +548,7 @@
 
 
         <!-- SELECTED PROJECTS SECTION -->
-        <section class="projects-section">
+        <section class="projects-section" id="projects">
             <div class="section-header mono reveal-up">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="2" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="19.07" y2="4.93"></line>
@@ -528,59 +558,59 @@
 
             <div class="projects-wrapper">
                 <div class="projects-list">
+                    <!-- Project 1 -->
                     <div class="project-row row-1 reveal-up proj-delay-1">
                         <div class="proj-num">_01.</div>
                         <div class="proj-info">
-                            <h2 class="proj-title">Electro EV <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
-                            <div class="proj-tech">Next.js &bull; Payload CMS &bull; Tailwind CSS</div>
+                            <h2 class="proj-title">16-Bit Custom Pipelined Processor <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">Logisim Evolution &bull; May 2026</div>
+                            <ul class="proj-bullets">
+                                <li>Architected a 5-stage pipelined 16-bit MIPS CPU with R/I/J formats and a 12-bit word-addressable PC</li>
+                                <li>Designed a custom Register File and ALU supporting seven 16-bit registers and 24 distinct instructions</li>
+                                <li>Engineered hardware hazard mitigation units with forwarding logic and pipeline stalling mechanisms</li>
+                            </ul>
                         </div>
                     </div>
 
+                    <!-- Project 2 -->
                     <div class="project-row row-2 reveal-up proj-delay-2">
                         <div class="proj-num">_02.</div>
                         <div class="proj-info">
-                            <h2 class="proj-title">Epikcart <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
-                            <div class="proj-tech">React &bull; Redux &bull; React i18n</div>
+                            <h2 class="proj-title">KFUPM Student Restaurant Web Application <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">Node.js &bull; REST API &bull; JavaScript &bull; September 2025</div>
+                            <ul class="proj-bullets">
+                                <li>Implemented RESTful APIs using Node.js supporting GET, POST, PUT, DELETE operations</li>
+                                <li>Collaborated with developers using Git/GitHub workflows</li>
+                                <li>Contributed to backend logic for a student restaurant ordering system</li>
+                            </ul>
                         </div>
                     </div>
 
+                    <!-- Project 3 -->
                     <div class="project-row row-3 reveal-up proj-delay-3">
                         <div class="proj-num">_03.</div>
                         <div class="proj-info">
-                            <h2 class="proj-title">Resume Roaster <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
-                            <div class="proj-tech">GPT-4 &bull; Next.js &bull; Postgresql</div>
-                        </div>
-                    </div>
-
-                    <div class="project-row row-4 reveal-up proj-delay-4">
-                        <div class="proj-num">_04.</div>
-                        <div class="proj-info">
-                            <h2 class="proj-title">Real Estate <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
-                            <div class="proj-tech">React.js &bull; Redux &bull; Tailwind CSS</div>
-                        </div>
-                    </div>
-
-                    <div class="project-row row-5 reveal-up proj-delay-5">
-                        <div class="proj-num">_05.</div>
-                        <div class="proj-info">
-                            <h2 class="proj-title">Consulting Finance <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
-                            <div class="proj-tech">HTML &bull; CSS & SCSS &bull; Javascript</div>
+                            <h2 class="proj-title">Horse Racing Management System <svg class="proj-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></h2>
+                            <div class="proj-tech">Django &bull; Python &bull; MySQL &bull; March 2025</div>
+                            <ul class="proj-bullets">
+                                <li>Designed and developed a database-driven web application using Django and MySQL</li>
+                                <li>Designed relational database schema to store race, participant, and performance data</li>
+                                <li>Developed dynamic web pages for viewing race results and performance analytics</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
 
                 <div class="project-preview reveal-up delay-2">
-                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Electro+EV+Preview" class="preview-img img-1" alt="Electro EV">
-                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Epikcart+Store" class="preview-img img-2" alt="Epikcart">
-                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Resume+Roaster" class="preview-img img-3" alt="Resume Roaster">
-                    <img src="https://via.placeholder.com/800x600/111111/1ed760?text=Real+Estate+App" class="preview-img img-4" alt="Real Estate">
-                    <img src="./media/me.png" class="preview-img img-5" alt="Consulting Finance">
+                    <img src="./media/pipelined_processor.png" class="preview-img img-1" alt="16-Bit Custom Pipelined Processor">
+                    <img src="./media/student_restaurant.png" class="preview-img img-2" alt="KFUPM Student Restaurant Web Application">
+                    <img src="./media/horse_racing.png" class="preview-img img-3" alt="Horse Racing Management System">
                 </div>
             </div>
         </section>
 
         <!-- CONTACT ME SECTION -->
-        <section class="contact-section">
+        <section class="contact-section" id="contact">
             <div class="contact-container reveal-up">
                 <h2 class="contact-headline">
                     <span class="text-white">LET'S WORK</span><br>
@@ -609,8 +639,8 @@
 
         <!-- FOOTER -->
         <footer class="reveal-up">
-            <div class="availability">Open to freelance, contract or full-time. <a href="#">Schedule a call</a></div>
-            <div class="footer-stats">5 full cases &bull; 82 archive fragments &bull; 22 catalog items</div>
+            <div class="availability">Open to freelance, contract or full-time. <a href="#contact">Schedule a call</a></div>
+            <!-- <div class="footer-stats">5 full cases &bull; 82 archive fragments &bull; 22 catalog items</div> -->
         </footer>
 
     </main>
